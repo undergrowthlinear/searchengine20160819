@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+               http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+			   http://www.springframework.org/schema/context
+			   http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+              ">
+	<!-- 用于操作lucene的底层类 -->
+
+	<bean id="nrtConf"
+		class="com.gpdi.searchengine.searchindexservice.conf.NRTManagerServiceConf"
+		init-method="initAreaInndexStorePath">
+		<property name="areaCode" value="${searchindex.areaCode}"></property>
+		<property name="indexBaseStorePath" value="${searchindex.indexBaseStorePath}"></property>
+		<property name="isRamDirectory" value="${searchindex.isRamDirectory}"></property>
+		<property name="targetMaxScaleSec" value="${searchindex.targetMaxScaleSec}"></property>
+		<property name="targetMinStaleSec" value="${searchindex.targetMinStaleSec}"></property>
+	</bean>
+
+	<bean id="analyzer" class="com.chenlb.mmseg4j.analysis.MMSegAnalyzer" />
+
+	<bean id="indexService"
+		class="com.gpdi.searchengine.searchindexservice.service.impl.IndexServiceDefaultImpl"
+		init-method="initIndexSearcher">
+		<property name="analyzer" ref="analyzer"></property>
+		<property name="nrtConf" ref="nrtConf"></property>
+	</bean>
+
+	<bean id="searchService"
+		class="com.gpdi.searchengine.searchindexservice.service.impl.SearchServiceDefaultImpl">
+		<property name="indexService" ref="indexService"></property>
+	</bean>
+
+
+
+</beans>

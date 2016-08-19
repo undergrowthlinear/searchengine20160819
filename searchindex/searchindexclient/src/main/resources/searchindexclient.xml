@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+               http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+			   http://www.springframework.org/schema/context
+			   http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+              ">
+
+	<!-- 配置索引的服务bean -->
+	<bean id="indexCientAssistServer"
+		class="com.gpdi.searchengine.searchindexclient.server.index.listener.IndexCientAssistServer">
+		<property name="docIndexService" ref="docIndexService"></property>
+		<property name="coordinatorService" ref="coordinatorService"></property>
+		<property name="addDataNode" value="${coordinatorservice.addDataNode}"></property>
+	</bean>
+
+	<bean id="indexClientServer"
+		class="com.gpdi.searchengine.searchindexclient.server.index.IndexClientServer"
+		init-method="start">
+		<property name="indexCientAssistServer" ref="indexCientAssistServer"></property>
+	</bean>
+
+
+	<!-- 配置搜索的服务bean -->
+	<bean id="gpdiSpringFactory"
+		class="com.gpdi.searchengine.searchindexclient.server.search.handler.GpdiSpringFactory"></bean>
+
+	<bean id="httpSearchExternalServer"
+		class="com.gpdi.searchengine.searchindexclient.server.search.external.HttpSearchExternalServer">
+		<property name="port" value="${httpSearchExternalServer.port}"></property>
+	</bean>
+
+	<bean id="httpSearchClientAssistServer"
+		class="com.gpdi.searchengine.searchindexclient.server.search.listener.HttpSearchClientAssistServer">
+		<property name="externalServer" ref="httpSearchExternalServer"></property>
+	</bean>
+
+	<bean id="httpSearchClientServer"
+		class="com.gpdi.searchengine.searchindexclient.server.search.HttpSearchClientServer"
+		init-method="start">
+		<property name="assistServer" ref="httpSearchClientAssistServer"></property>
+	</bean>
+
+
+</beans>
